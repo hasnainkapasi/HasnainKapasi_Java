@@ -16,7 +16,7 @@ public class EodPositionCsvFileWriterImpl implements EodPositionFileWriter {
 
     private static final String FILE_HEADER = "Instrument,Account,AccountType,Quantity,Delta";
     private static final String COMMA_DELIMITER = ",";
-    private static final String NEW_LINE_SEPARATOR = "\n";
+    private static final String NEW_LINE_SEPARATOR = "\r\n";
 
     @Override
     public boolean write(List<EodPosition> eodPositions, String filePath) {

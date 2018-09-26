@@ -20,15 +20,20 @@ public class GeneralLedgerSystemApplication
 {
     public static void main(String[] args)
     {
-        String inputFileDirPath = "inputFiles/";
-        String outputFileDirPath = "outputFiles/";
+    	if (args.length != 3) {
+    		System.out.println("Invalid number of arguments are passed!!!");
+    		System.out.println("Execute jar as below:");
+    		System.out.println("java -jar general-ledger-system.jar <position file path> <transaction file path> <output file folder>");
+    		return;
+    	}
+        String outputFileDirPath = args[2];
         File outputFileDirectory = new File(String.valueOf(outputFileDirPath));
         if (!outputFileDirectory.exists()) {
             outputFileDirectory.mkdir();
         }
-        String positionFilePath = inputFileDirPath + "Input_StartOfDay_Positions.txt";
-        String transactionFilePath = inputFileDirPath + "1537277231233_Input_Transactions.txt";
-        String eodPositionFilePath = outputFileDirPath + "Output_EndOfDay_Positions.txt";
+        String positionFilePath = args[0];
+        String transactionFilePath = args[1];
+        String eodPositionFilePath = outputFileDirPath + "/Output_EndOfDay_Positions.txt";
         PositionFileReader positionFileReader = new PositionCsvFileReaderImpl();
         TransactionFileReader transactionFileReader = new TransactionJsonFileReaderImpl();
         List<Position> positions = positionFileReader.read(positionFilePath);
@@ -41,10 +46,10 @@ public class GeneralLedgerSystemApplication
                 .sorted(Comparator.comparing(eodp -> Math.abs(((EodPosition)eodp).getDelta())))
                 .collect(Collectors.toList());
         System.out.println(
-                String.format("instrument with largest net transaction volume for the day is %s with delta equal to %d",
+                String.format("instrument with lowest net transaction volume for the day is %s with delta equal to %d",
                         eodPositions.get(0).getStockSymbol(), eodPositions.get(0).getDelta()));
         System.out.println(
-                String.format("instrument with lowest net transaction volume for the day is %s with delta equal to %d",
+                String.format("instrument with largest net transaction volume for the day is %s with delta equal to %d",
                         eodPositions.get(eodPositions.size() - 1).getStockSymbol(),
                         eodPositions.get(eodPositions.size() - 1).getDelta()));
     }
